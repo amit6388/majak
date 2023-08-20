@@ -1,8 +1,51 @@
 import React, { useState, } from 'react'
+import {useNavigate} from "react-router-dom"
 import "../styles/SignUp.css"
 
 
 export default function SignUp() {
+const [name,setName]=useState("")
+const  [email,setEmail]=useState("")
+const [contact,setMobile]=useState("")
+const [password,setPassword]=useState("")
+const navigate=useNavigate()
+  const data = {name, email,contact, password };
+
+ 
+   function register(){
+    console.log(data );
+    fetch("http://localhost:8000/api/instructor", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json();
+        }
+      })
+      .then((result) => {
+        //console.log(result);
+        if (result.status === true && result.code === 200) {
+          console.log(result.status);
+          
+          navigate('/login');
+          window.location.reload(true)
+        } else {
+          alert(result.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  
+   }
+
   return (
     <>
    <div className='container-fluid a py-3'>
@@ -10,12 +53,12 @@ export default function SignUp() {
         <div className='col-sm-2'></div>
        <div className='col-sm-4 py-5'>
        <h2><u style={{color:'#fdc700'}}>Sign</u>Up..??</h2>
-      <input type="text"  className='form-control w-100 '  placeholder='Enter Your name' /><br/>
-      <input type="email"  className='form-control w-100 '  placeholder='Enter Your Email' /><br/>
-      <input type="number"   className='form-control w-100 '  placeholder='Enter Your Mobile' /><br/>
-      <input type="password"  className='form-control w-100 ' placeholder='Enter Your password' /><br/>
+      <input type="text"  className='form-control w-100 '    onChange={(e)=>setName(e.target.value)}  placeholder='Enter Your name' /><br/>
+      <input type="email"  className='form-control w-100 '    onChange={(e)=>setEmail(e.target.value)}  placeholder='Enter Your Email' /><br/>
+      <input type="number"   className='form-control w-100 '    onChange={(e)=>setMobile(e.target.value)} placeholder='Enter Your Mobile' /><br/>
+      <input type="password"  className='form-control w-100 '    onChange={(e)=>setPassword(e.target.value)} placeholder='Enter Your password' /><br/>
       <div>
-        <button  className='form-control  w-100' style={{background:'#fdc700'}}>SignUp</button>
+        <button  className='form-control  w-100' onClick={register} style={{background:'#fdc700'}}>SignUp</button>
         </div>
         <br/>
         <h6 className='text-light'><b style={{color:'black'}}>I have an already Account.?  </b><a href='/login'>Login</a></h6>
@@ -29,4 +72,3 @@ export default function SignUp() {
     </>
   )
 }
-
